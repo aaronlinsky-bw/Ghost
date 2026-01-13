@@ -284,6 +284,11 @@ module.exports = function apiRoutes() {
     router.get('/authentication/setup', http(api.authentication.isSetup));
     router.post('/authentication/global_password_reset', mw.authAdminApi, http(api.authentication.resetAllPasswords));
 
+    // ## Azure AD SSO Authentication
+    router.get('/auth/azure/status', http(api.authAzure.status));
+    router.get('/auth/azure/redirect', http(api.authAzure.redirect));
+    router.get('/auth/azure/callback', http(api.authAzure.callback));
+
     // ## Images
     router.post('/images/upload',
         mw.authAdminApi,

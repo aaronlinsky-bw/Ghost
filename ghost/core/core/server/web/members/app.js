@@ -15,6 +15,7 @@ const api = require('../../api').endpoints;
 
 const commentRouter = require('../comments');
 const announcementRouter = require('../announcement');
+const memberAzureAuth = require('./azure-auth');
 
 /**
  * @returns {import('express').Application}
@@ -71,6 +72,9 @@ module.exports = function setupMembersApp() {
     membersApp.delete('/api/session', bodyParser.json({limit: '5mb'}), middleware.deleteSession);
 
     membersApp.get('/api/integrity-token', middleware.createIntegrityToken);
+
+    // Azure AD SSO for members
+    membersApp.use('/api/auth/azure', memberAzureAuth());
 
     membersApp.post(
         '/api/send-magic-link',

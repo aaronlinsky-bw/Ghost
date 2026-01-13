@@ -7,6 +7,7 @@ import InputForm from '../common/input-form';
 import {ValidateInputForm} from '../../utils/form';
 import {hasAvailablePrices, isSigninAllowed, isSignupAllowed} from '../../utils/helpers';
 import {ReactComponent as InvitationIcon} from '../../images/icons/invitation.svg';
+import {ReactComponent as MicrosoftIcon} from '../../images/icons/microsoft.svg';
 import {t} from '../../utils/i18n';
 
 export default class SigninPage extends React.Component {
@@ -16,7 +17,8 @@ export default class SigninPage extends React.Component {
         super(props);
         this.state = {
             email: '',
-            token: undefined
+            token: undefined,
+            azureSsoEnabled: false
         };
     }
 
@@ -26,6 +28,22 @@ export default class SigninPage extends React.Component {
             this.context.doAction('switchPage', {
                 page: 'accountHome'
             });
+        }
+        
+        // Check if Azure AD SSO is available for members
+        this.checkAzureSsoStatus();
+    }
+    
+    async checkAzureSsoStatus() {
+        try {
+            const response = await fetch('/members/api/auth/azure/status');
+            if (response.ok) {
+                const status = await response.json();
+                this.setState({azureSsoEnabled: status.enabled && status.configured});
+            }
+        } catch (e) {
+            // Azure SSO not available
+            this.setState({azureSsoEnabled: false});
         }
     }
 
@@ -92,6 +110,56 @@ export default class SigninPage extends React.Component {
         return fields;
     }
 
+    handleMicrosoftSignin(e) {
+        e.preventDefault();
+        this.context.doAction('signinWithMicrosoft');
+    }
+
+    renderMicrosoftSsoButton() {
+        if (!this.state.azureSsoEnabled) {
+            return null;
+        }
+
+        return (
+            <div className="gh-portal-sso-section">
+                <button
+                    className="gh-portal-btn gh-portal-btn-outline gh-portal-btn-microsoft"
+                    data-test-button="signin-microsoft"
+                    onClick={e => this.handleMicrosoftSignin(e)}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        width: '100%',
+                        marginBottom: '16px'
+                    }}
+                >
+                    <MicrosoftIcon style={{width: '18px', height: '18px'}} />
+                    <span>{t('Sign in with Microsoft')}</span>
+                </button>
+                <div className="gh-portal-divider" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    margin: '16px 0',
+                    color: 'var(--grey6)'
+                }}>
+                    <span style={{
+                        flex: 1,
+                        height: '1px',
+                        backgroundColor: 'var(--grey11)'
+                    }}></span>
+                    <span style={{padding: '0 12px', fontSize: '13px'}}>{t('or')}</span>
+                    <span style={{
+                        flex: 1,
+                        height: '1px',
+                        backgroundColor: 'var(--grey11)'
+                    }}></span>
+                </div>
+            </div>
+        );
+    }
+
     renderSubmitButton() {
         const {action} = this.context;
         let retry = false;
@@ -155,6 +223,7 @@ export default class SigninPage extends React.Component {
         return (
             <section>
                 <div className='gh-portal-section'>
+                    {this.renderMicrosoftSsoButton()}
                     <InputForm
                         fields={this.getInputFields({state: this.state})}
                         onChange={(e, field) => this.handleInputChange(e, field)}

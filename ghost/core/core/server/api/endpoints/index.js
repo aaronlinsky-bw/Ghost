@@ -12,6 +12,10 @@ module.exports = {
         return apiFramework.pipeline(require('./authentication'), localUtils);
     },
 
+    get authAzure() {
+        return apiFramework.pipeline(require('./auth-azure'), localUtils);
+    },
+
     get db() {
         return apiFramework.pipeline(require('./db'), localUtils);
     },

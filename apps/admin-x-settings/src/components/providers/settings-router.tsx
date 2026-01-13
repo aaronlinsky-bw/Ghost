@@ -26,6 +26,7 @@ export const modalPaths: {[key: string]: ModalName} = {
     'integrations/unsplash': 'UnsplashModal',
     'integrations/firstpromoter': 'FirstPromoterModal',
     'integrations/pintura': 'PinturaModal',
+    'integrations/azure-ad': 'AzureADModal',
     'integrations/new': 'AddIntegrationModal',
     'integrations/:id': 'CustomIntegrationModal',
     'recommendations/add': 'AddRecommendationModal',

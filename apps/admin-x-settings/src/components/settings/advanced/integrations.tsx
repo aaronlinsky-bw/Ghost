@@ -142,6 +142,19 @@ const BuiltInIntegrations: React.FC = () => {
                 icon={<Icon name='pintura' size={32} />}
                 testId='pintura-integration'
                 title='Pintura' />
+
+            <IntegrationItem
+                action={() => {
+                    openModal('integrations/azure-ad');
+                }}
+                detail='Single Sign-On with Microsoft Entra ID'
+                icon={
+                    <div className="flex h-8 w-8 items-center justify-center rounded bg-[#0078d4]">
+                        <Icon className="text-white" name="user" size={20} />
+                    </div>
+                }
+                testId='azure-ad-integration'
+                title='Azure AD SSO' />
         </List>
     );
 };

@@ -120,6 +120,26 @@ async function signin({data, api, state}) {
     }
 }
 
+async function signinWithMicrosoft({state}) {
+    try {
+        // Redirect to Azure AD SSO endpoint
+        const currentUrl = window.location.href;
+        const redirectUrl = `/members/api/auth/azure/redirect?redirect=${encodeURIComponent(currentUrl)}`;
+        window.location.href = redirectUrl;
+        return {
+            action: 'signinWithMicrosoft:running'
+        };
+    } catch (e) {
+        return {
+            action: 'signinWithMicrosoft:failed',
+            popupNotification: createPopupNotification({
+                type: 'signinWithMicrosoft:failed', autoHide: false, closeable: true, state, status: 'error',
+                message: chooseBestErrorMessage(e, t('Failed to sign in with Microsoft'))
+            })
+        };
+    }
+}
+
 function startSigninOTCFromCustomForm({data, state}) {
     const email = (data?.email || '').trim();
     const otcRef = data?.otcRef;
@@ -621,6 +641,7 @@ const Actions = {
     back,
     signout,
     signin,
+    signinWithMicrosoft,
     startSigninOTCFromCustomForm,
     verifyOTC,
     signup,

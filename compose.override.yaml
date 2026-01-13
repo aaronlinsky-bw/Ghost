@@ -1,0 +1,7 @@
+name: ghost-dev
+
+services:
+  # Use a different host port so it doesn't conflict with existing Redis
+  redis:
+    ports:
+      - "6380:6379"

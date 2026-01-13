@@ -1,3 +1,21 @@
 {
-    "enableDeveloperExperiments": true
+    "enableDeveloperExperiments": true,
+    "adapters": {
+        "sso": {
+            "active": "AzureADSSOAdapter",
+            "AzureADSSOAdapter": {
+                "tenantId": "YOUR_AZURE_TENANT_ID",
+                "clientId": "YOUR_AZURE_CLIENT_ID",
+                "clientSecret": "YOUR_AZURE_CLIENT_SECRET",
+                "staffGroupMapping": {
+                    "AL_Blog_Admin": "Administrator",
+                    "AL_Blog_Author": "Author"
+                },
+                "memberGroups": ["AL_Blog_User"],
+                "memberGroupMapping": {
+                    "AL_Blog_User": "Azure SSO User"
+                }
+            }
+        }
+    }
 }
